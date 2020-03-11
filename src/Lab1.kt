@@ -37,7 +37,7 @@ class Lab1(
         //Заповнення матриці
         for(j in 0 until n) {
             for (i in 1 until m) {
-                grid[i][j + 1] = grid[i][j] + t * k * (grid[i + 1][j] - 2 * grid[i][j] + grid[i - 1][j]) / h.pow(2)+ t * func(i * h, t)
+                grid[i][j + 1] = grid[i][j] + t * k * (grid[i + 1][j] - 2 * grid[i][j] + grid[i - 1][j]) / h.pow(2)+ t * func(i * h, j *  t)
             }
         }
 
