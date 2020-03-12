@@ -13,8 +13,7 @@ fun main()  {
     )
 
     val lab1 = Lab1(4, 1,1,0.1)
-    lab1
-        .phi { 5 * (1 - it) }
+    lab1.phi { 5 * (1 - it)  }
         .mu1 { 5 * kotlin.math.exp(-it) }
         .mu2 { it }
         .func { x,t -> t * x }
@@ -27,7 +26,6 @@ fun main()  {
         print(messages["input_t"])
         input = readLine()
 
-
         if(input.isNullOrEmpty()) {
             println(messages["error_input"])
             continue
@@ -38,23 +36,18 @@ fun main()  {
             break
         }
 
-        var t : Double?
-
         try {
-            t = input.toDouble()
-        } catch (e : NumberFormatException) {
-            println("${messages["error_input"]} [${e.message}]")
-            continue
-        }
-
-        try {
-            val grid =  lab1.getGrid(t)
+            val t = input.toDouble()
+            val grid = lab1.getGrid(t)
 
             /**
              * grid render view
              */
             grid.map { l -> l.map { print("${(it.toFloat())} ") }; println() }
 
+        } catch (e: NumberFormatException) {
+            println("${messages["error_input"]} [${e.message}]")
+            continue
         } catch (e: ConsistencyException) {
             println(e.message)
             continue
