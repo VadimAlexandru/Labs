@@ -1,30 +1,65 @@
 
 import exceptions.ConsistencyException
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.exp
-import kotlin.math.sin
+import java.lang.NumberFormatException
+
 
 fun main()  {
-    val lab1 = Lab1(5, 1,1,0.1)
 
+    val messages : Map<String, String> = mapOf(
+        "exit_info" to "Для виходу введіть exit",
+        "error_input" to "t має бути числом",
+        "input_t" to "Введіть значення t: ",
+        "exit" to "Ok"
+    )
+
+    val lab1 = Lab1(4, 1,1,0.1)
     lab1
-        .phi { 10 * cos((PI/ 2) * it) }
-        .mu1 { 10 * exp(it) }
-        .mu2 { sin(it) }
-        .func { x, _ -> 2 * sin(2 * x) * sin(x) }
+        .phi { 5 * (1 - it) }
+        .mu1 { 5 * kotlin.math.exp(-it) }
+        .mu2 { it }
+        .func { x,t -> t * x }
 
-    try {
-       val grid =  lab1.getGrid(0.5)
+    println(messages["exit_info"])
 
-        /**
-         * grid render view
-         */
-        grid.map { l -> l.map { print("${(it.toFloat())} ") }; println() }
+    var input : String?
 
-    } catch (e: ConsistencyException) {
-        println(e.message)
+    while(true) {
+        print(messages["input_t"])
+        input = readLine()
+
+
+        if(input.isNullOrEmpty()) {
+            println(messages["error_input"])
+            continue
+        }
+
+        if(input.toLowerCase() == "exit") {
+            println(messages["exit"])
+            break
+        }
+
+        var t : Double?
+
+        try {
+            t = input.toDouble()
+        } catch (e : NumberFormatException) {
+            println("${messages["error_input"]} [${e.message}]")
+            continue
+        }
+
+        try {
+            val grid =  lab1.getGrid(t)
+
+            /**
+             * grid render view
+             */
+            grid.map { l -> l.map { print("${(it.toFloat())} ") }; println() }
+
+        } catch (e: ConsistencyException) {
+            println(e.message)
+            continue
+        }
+
     }
-
 }
 
