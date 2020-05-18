@@ -1,58 +1,62 @@
-
-import exceptions.ConsistencyException
+import exceptions.BreakLoop
+import exceptions.InvalidLabNumber
+import lab1.Lab1
+import lab1.Lab1Context
+import lab2.Lab2
+import lab2.Lab2Context
+import lab3.Lab3
+import lab3.Lab3Context
 import java.lang.NumberFormatException
 
+fun main() {
 
-fun main()  {
+var userInput : String?
 
-    val messages : Map<String, String> = mapOf(
-        "exit_info" to "Для виходу введіть exit",
-        "error_input" to "t має бути числом",
-        "input_t" to "Введіть значення t: ",
-        "exit" to "Ok"
-    )
+    while (true) {
+        println("Введіть номер лабораторної роботи(1-3): (для виходу з програми введіть exit)")
 
-    val lab1 = Lab1(4, 1,1,0.1)
-    lab1.phi { 5 * (1 - it)  }
-        .mu1 { 5 * kotlin.math.exp(-it) }
-        .mu2 { it }
-        .func { x,t -> t * x }
+        try {
+            userInput = readLine()
+            when {
+                userInput.isNullOrEmpty() -> throw InvalidLabNumber("Не правильно введено номер лабораторної")
+                "exit" == userInput.toLowerCase() -> throw BreakLoop()
+            }
 
-    println(messages["exit_info"])
+            when(userInput!!.toInt()) {
+                1 -> {
+                    val context = Lab1Context()
+                    val lab = Lab1(context)
+                    lab.init()
+                }
 
-    var input : String?
+                2 -> {
+                    val context = Lab2Context()
+                    val lab = Lab2(context)
+                    lab.init()
+                }
 
-    while(true) {
-        print(messages["input_t"])
-        input = readLine()
+                3 -> {
+                    val context = Lab3Context()
+                    val lab = Lab3(context)
+                    lab.init()
+                }
 
-        if(input.isNullOrEmpty()) {
-            println(messages["error_input"])
+                else -> {
+                    throw InvalidLabNumber("Неправильно введено но номер лабораторної")
+                }
+            }
+
+        } catch (e : InvalidLabNumber) {
+            println(e.message)
             continue
-        }
-
-        if(input.toLowerCase() == "exit") {
-            println(messages["exit"])
+        } catch (e : NumberFormatException) {
+            println("Введіть ціле число в діапацоні від 1 до 3 [${e.message}]")
+            continue;
+        }  catch (e : BreakLoop) {
             break
         }
 
-        try {
-            val t = input.toDouble()
-            val grid = lab1.getGrid(t)
-
-            /**
-             * grid render view
-             */
-            grid.map { l -> l.map { print("${(it.toFloat())} ") }; println() }
-
-        } catch (e: NumberFormatException) {
-            println("${messages["error_input"]} [${e.message}]")
-            continue
-        } catch (e: ConsistencyException) {
-            println(e.message)
-            continue
-        }
-
     }
-}
 
+
+}
